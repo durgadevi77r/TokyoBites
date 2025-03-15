@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bill Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            margin: auto;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        input {
+            width: 80%;
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px;
+            background: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .remove-btn {
+            background: red;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background: #eee;
+            padding: 10px;
+            margin: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Simple Bill Calculator</h2>
+        <input type="text" id="item-name" placeholder="Item Name">
+        <input type="number" id="item-price" placeholder="Price">
+        <input type="number" id="item-quantity" placeholder="Quantity">
+        <button onclick="addItem()">Add Item</button>
+
+        <ul id="bill-list"></ul>
+
+        <h3>Total Bill: $<span id="total-bill">0</span></h3>
+    </div>
+
+    <script>
+        let billItems = [];
+        let totalBill = 0;
+
+        function addItem() {
+            let name = document.getElementById("item-name").value;
+            let price = parseFloat(document.getElementById("item-price").value);
+            let quantity = parseInt(document.getElementById("item-quantity").value);
+
+            if (!name || isNaN(price) || isNaN(quantity) || price <= 0 || quantity <= 0) {
+                alert("Please enter valid details.");
+                return;
+            }
+
+            let totalItemPrice = price * quantity;
+            billItems.push({ name, price, quantity, totalItemPrice });
+
+            updateBill();
+            clearInputs();
+        }
+
+        function removeItem(index) {
+            billItems.splice(index, 1);
+            updateBill();
+        }
+
+        function updateBill() {
+            let billList = document.getElementById("bill-list");
+            let totalBillDisplay = document.getElementById("total-bill");
+            billList.innerHTML = "";
+            totalBill = 0;
+
+            billItems.forEach((item, index) => {
+                let li = document.createElement("li");
+                li.innerHTML = `${item.name} - $${item.price} x ${item.quantity} = $${item.totalItemPrice} 
+                    <button class="remove-btn" onclick="removeItem(${index})">X</button>`;
+                billList.appendChild(li);
+                totalBill += item.totalItemPrice;
+            });
+
+            totalBillDisplay.innerText = totalBill.toFixed(2);
+        }
+
+        function clearInputs() {
+            document.getElementById("item-name").value = "";
+            document.getElementById("item-price").value = "";
+            document.getElementById("item-quantity").value = "";
+        }
+    </script>
+
+</body>
+</html>
